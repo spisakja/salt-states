@@ -1,0 +1,8 @@
+deb http://ftp.cvut.cz/debian/ {{ salt['grains.get']('oscodename') }} main
+deb-src http://ftp.cvut.cz/debian/ {{ salt['grains.get']('oscodename') }} main
+
+deb http://security.debian.org/debian-security {{ salt['grains.get']('oscodename') }}-security main
+deb-src http://security.debian.org/debian-security {{ salt['grains.get']('oscodename') }}-security main
+
+deb http://ftp.cvut.cz/debian/ {{ salt['grains.get']('oscodename') }}-updates main
+deb-src http://ftp.cvut.cz/debian/ {{ salt['grains.get']('oscodename') }}-updates main

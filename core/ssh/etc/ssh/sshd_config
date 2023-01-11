@@ -1,0 +1,74 @@
+Port 2222
+AddressFamily inet
+ListenAddress {{ ipaddr }}
+
+KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+LoginGraceTime 30s
+PermitRootLogin no
+StrictModes yes
+MaxAuthTries 3
+MaxSessions 2
+
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile	.ssh/authorized_keys .ssh/authorized_keys2
+
+HostbasedAuthentication no
+IgnoreRhosts yes
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+UsePAM yes
+
+AllowAgentForwarding no
+AllowTcpForwarding no
+GatewayPorts no
+X11Forwarding no
+PermitTTY yes
+PrintMotd no
+PrintLastLog yes
+#UsePrivilegeSeparation sandbox			# As per documentation, this is considered depricated and turned on by default.
+PermitUserEnvironment no
+
+Compression no
+
+ClientAliveInterval 300
+ClientAliveCountMax 0
+TCPKeepAlive no
+
+UseDNS no
+PidFile /var/run/sshd.pid
+MaxStartups 10:30:100
+PermitTunnel no
+#ChrootDirectory none
+VersionAddendum none
+
+Banner /etc/issue.net
+DebianBanner no
+
+#-----------------------------------------------------------------------------------------------------------------------------#
+# Allow client to pass locale environment variables
+#-----------------------------------------------------------------------------------------------------------------------------#
+AcceptEnv LANG LC_*
+
+#-----------------------------------------------------------------------------------------------------------------------------#
+# Override default of no subsystems
+#-----------------------------------------------------------------------------------------------------------------------------#
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+#-----------------------------------------------------------------------------------------------------------------------------#
+# Allowing one or more system groups to login over SSH
+#-----------------------------------------------------------------------------------------------------------------------------#
+AllowGroups	sshlogin
+
+Match Address 10.24.5.30
+	PasswordAuthentication yes
+

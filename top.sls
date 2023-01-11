@@ -1,0 +1,5 @@
+base:
+  '*':
+    - core
+    - core.apt
+
