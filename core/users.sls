@@ -3,23 +3,42 @@ wheel_group:
     - name: wheel
     - system: True
 
-create_users:
+{% for user, data in pillar.get('users', {}).items() %}
+{{ user }}:
   user.present:
-    - name: yayo
-    - fullname: Jaroslav Spisak
-    - home: /home/yayo
-    - uid: 1000
-    - gid: 1000
-    - usergroup: True
+    - fullname: {{ data.fullname }}
+
+    {% if data.home is defined %}
+    - home: {{ data.home }}
+    {% endif %}
+
+    {% if data.uid is defined %}
+    - uid: {{ data.uid }}
+    {% endif %}
+
+    {% if data.gid is defined %}
+    - gid: {{ data.gid }}
+    {% endif %}
+
+    - usergroup: {{ data.usergroup|default('True', true) }}
+
+    {% if data.groups is defined %}
     - groups:
-      - sshlogin
-      - wheel
+      {% for group in data.groups %}
+      - {{ group }}
+      {% endfor %}
+    {% endif %}
+
+  {% if data.ssh_keys is defined %}
   ssh_auth.present:
-    - user: yayo
-    - comment: Jaroslav Spisak <jspisak@spiru.cz>
-    - enc: ssh-ed25519
+    - user: {{ user }}
     - names:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJBAnWC7A4OYjm8FBJDDeSCESVbUVNjhtzxB6xkNWPpr
+      {% for ssh_key in data.ssh_keys %}
+      - {{ ssh_key }}
+      {% endfor %}
+  {% endif %}
+
+{% endfor %}
 
 allow_use_su_to_wheel_users:
   file.uncomment:
